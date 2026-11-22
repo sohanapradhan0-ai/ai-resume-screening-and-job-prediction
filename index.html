@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        AI ResumePro
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            🧠
+
+            <span>
+                AI ResumePro
+            </span>
+
+        </div>
+
+
+        <p class="tag">
+
+            Smart Hiring • Better Future
+
+        </p>
+
+
+        <nav>
+
+            <a class="active">
+                ⌂ Dashboard
+            </a>
+
+            <a>
+                📄 Upload Resume
+            </a>
+
+            <a>
+                💼 Job Description
+            </a>
+
+            <a>
+                📊 Screening Results
+            </a>
+
+            <a>
+                🎯 Recommended Jobs
+            </a>
+
+            <a>
+                💡 Skill Gap Analysis
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <header>
+
+            <div>
+
+                <h1>
+                    AI Resume Screening &
+                    Job Recommendation System
+                </h1>
+
+                <p>
+
+                    Upload a resume, analyze skills,
+                    and find suitable jobs using
+                    AI & Machine Learning.
+
+                </p>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ERROR -->
+
+        {% if error %}
+
+        <div class="alert">
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- UPLOAD FORM -->
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+
+            <section class="cards">
+
+
+                <!-- RESUME -->
+
+                <div class="card upload">
+
+                    <h3>
+                        📄 Upload Resume
+                    </h3>
+
+                    <p>
+                        Upload your resume
+                        in PDF format.
+                    </p>
+
+                    <input
+                        type="file"
+                        name="resume"
+                        accept=".pdf"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- JOB DESCRIPTION -->
+
+                <div class="card job">
+
+                    <h3>
+                        💼 Job Description
+                    </h3>
+
+                    <p>
+                        Optional: paste a
+                        specific job description.
+                    </p>
+
+                    <textarea
+                        name="job_description"
+                        placeholder="Example: Python, SQL, Machine Learning, Flask..."
+                    ></textarea>
+
+                </div>
+
+
+
+                <!-- ANALYSIS -->
+
+                <div class="card action">
+
+                    <h3>
+                        🤖 Start Analysis
+                    </h3>
+
+                    <p>
+                        Our ML system will compare
+                        your resume and recommend jobs.
+                    </p>
+
+                    <button
+                        type="submit"
+                    >
+
+                        ▶ Run Analysis
+
+                    </button>
+
+                </div>
+
+
+            </section>
+
+
+        </form>
+
+
+
+        <!-- RESULT -->
+
+        {% if result %}
+
+
+        <section class="result-grid">
+
+
+            <!-- CANDIDATE -->
+
+            <div class="result-card">
+
+
+                <div class="score-circle">
+
+                    <strong>
+
+                        {% if result.overall_score is not none %}
+
+                            {{ result.overall_score|round|int }}%
+
+                        {% else %}
+
+                            --
+
+                        {% endif %}
+
+                    </strong>
+
+
+                    <span>
+
+                        Match Score
+
+                    </span>
+
+                </div>
+
+
+
+                <div class="profile">
+
+
+                    <h2>
+
+                        Candidate Analysis
+
+                    </h2>
+
+
+                    <p>
+
+                        <b>
+                            Resume:
+                        </b>
+
+                        {{ result.filename }}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>
+                            Analysis:
+                        </b>
+
+                        {{ result.analysis_title }}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>
+                            Resume Text:
+                        </b>
+
+                    </p>
+
+
+                    <div class="preview">
+
+                        {{ result.resume_preview }}
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- SKILLS -->
+
+            <div class="result-card">
+
+
+                <h2>
+                    Skill Analysis
+                </h2>
+
+
+                <div class="skill-columns">
+
+
+                    <!-- MATCHED -->
+
+                    <div>
+
+                        <h3 class="green">
+
+                            ✓ Matched Skills
+
+                        </h3>
+
+
+                        {% if result.matched %}
+
+                            {% for skill in result.matched %}
+
+                                <span
+                                    class="skill good"
+                                >
+
+                                    {{ skill }}
+
+                                </span>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <p>
+                                No specific skills
+                                matched yet.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+
+                    <!-- MISSING -->
+
+                    <div>
+
+                        <h3 class="red">
+
+                            ✕ Missing Skills
+
+                        </h3>
+
+
+                        {% if result.missing %}
+
+                            {% for skill in result.missing %}
+
+                                <span
+                                    class="skill bad"
+                                >
+
+                                    {{ skill }}
+
+                                </span>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <p>
+
+                                No missing skills
+                                detected.
+
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- JOB RECOMMENDATION -->
+
+        <section class="section">
+
+
+            <h2>
+
+                🎯 Recommended Jobs
+
+            </h2>
+
+
+            <div class="jobs">
+
+
+                {% for job in result.recommendations %}
+
+
+                <div class="job-row">
+
+
+                    <div class="job-icon">
+
+                        💼
+
+                    </div>
+
+
+                    <div class="job-info">
+
+
+                        <h3>
+
+                            {{ job.title }}
+
+                        </h3>
+
+
+                        <p>
+
+                            {{ job.company }}
+
+                            •
+                            
+                            {{ job.location }}
+
+                        </p>
+
+
+                        <small>
+
+                            Matched:
+
+                            {{ job.matched|join(', ') if job.matched else 'None' }}
+
+                        </small>
+
+
+                    </div>
+
+
+                    <div class="job-score">
+
+                        {{ job.score }}%
+
+                    </div>
+
+
+                    <div>
+
+                        <button
+                            type="button"
+                            class="small-btn"
+                        >
+
+                            View
+
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- RECOMMENDATION -->
+
+        <section class="section">
+
+
+            <h2>
+
+                💡 AI Skill-Gap Recommendation
+
+            </h2>
+
+
+            <div class="recommendation">
+
+
+                {% if result.missing %}
+
+                    To improve your job match,
+                    focus on:
+
+                    <b>
+
+                        {{ result.missing|join(', ') }}
+
+                    </b>.
+
+                {% else %}
+
+                    Your resume contains
+                    the main skills detected
+                    for the selected job.
+
+                {% endif %}
+
+
+            </div>
+
+
+        </section>
+
+
+        {% endif %}
+
+
+
+        <footer>
+
+            © 2026 AI ResumePro • Built with
+            Python, Flask & Machine Learning
+
+        </footer>
+
+
+    </main>
+
+
+</div>
+
+
+</body>
+
+</html>
